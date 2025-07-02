@@ -2,16 +2,6 @@
 
 A Python-based travel assistant application that uses Google's Agent Development Kit (ADK) to provide personalized travel recommendations. The assistant uses **Couchbase Capella** (cloud database) for scalable, distributed memory storage - perfect for production deployments with multiple users.
 
-## 🌟 Why Couchbase Capella?
-
-- **☁️ Cloud-native**: Fully managed database service
-- **⚡ High Performance**: Sub-millisecond data access
-- **📈 Scalable**: Automatic scaling based on demand
-- **🔒 Secure**: Built-in security and compliance
-- **🌍 Global**: Multi-region deployment options
-- **💪 Reliable**: 99.99% uptime SLA
-- **👥 Multi-user**: Supports concurrent users seamlessly
-
 ## Requirements
 
 - Python 3.10 or higher
@@ -163,7 +153,7 @@ python main.py
 ### Capella Setup Steps
 
 1. **Sign up for Couchbase Capella**
-   - Go to [cloud.couchbase.com](https://cloud.couchbase.com/)
+   - Go to [cloud.couchbase.com](https://cloud.couchbase.com/sign-up?utm_source=giveago&utm_medium=community)
    - Create a free account
    - Verify your email address
 
