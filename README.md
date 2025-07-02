@@ -1,11 +1,22 @@
-# Agentic Memory using File for persistance
+# Agentic Memory using Couchbase Capella for Persistence
 
-A Python-based travel assistant application that uses Google's Agent Development Kit (ADK) to provide personalized travel recommendations. The assistant remembers user preferences and can help with flight searches.
+A Python-based travel assistant application that uses Google's Agent Development Kit (ADK) to provide personalized travel recommendations. The assistant uses **Couchbase Capella** (cloud database) for scalable, distributed memory storage - perfect for production deployments with multiple users.
+
+## 🌟 Why Couchbase Capella?
+
+- **☁️ Cloud-native**: Fully managed database service
+- **⚡ High Performance**: Sub-millisecond data access
+- **📈 Scalable**: Automatic scaling based on demand
+- **🔒 Secure**: Built-in security and compliance
+- **🌍 Global**: Multi-region deployment options
+- **💪 Reliable**: 99.99% uptime SLA
+- **👥 Multi-user**: Supports concurrent users seamlessly
 
 ## Requirements
 
 - Python 3.10 or higher
 - Google API Key (for Gemini AI)
+- **Couchbase Capella account and cluster**
 
 ## Setup Instructions
 
@@ -57,10 +68,17 @@ Create a `.env` file in the project root:
 touch .env
 ```
 
-Add your Google API key to the `.env` file:
+Add your API keys and Couchbase configuration to the `.env` file:
 
 ```env
+# Google API Key (required)
 GOOGLE_API_KEY=your_google_api_key_here
+
+# Couchbase Capella Configuration (required)
+COUCHBASE_CONN_STR=couchbases://cb.your-endpoint.cloud.couchbase.com
+COUCHBASE_USERNAME=your_username
+COUCHBASE_PASSWORD=your_password
+COUCHBASE_BUCKET=your_bucket_name
 ```
 
 #### 5. Run the application
@@ -95,7 +113,7 @@ pip install --upgrade pip
 pip install -e .
 
 # Or install dependencies directly:
-pip install "google-adk>=1.5.0" "python-dotenv>=1.0.0"
+pip install "google-adk>=1.5.0" "python-dotenv>=1.0.0" "couchbase>=4.0.0"
 ```
 
 #### 3. Setup environment variables
@@ -106,10 +124,17 @@ Create a `.env` file in the project root:
 touch .env
 ```
 
-Add your Google API key to the `.env` file:
+Add your API keys and Couchbase configuration to the `.env` file:
 
 ```env
+# Google API Key (required)
 GOOGLE_API_KEY=your_google_api_key_here
+
+# Couchbase Capella Configuration (required)
+COUCHBASE_CONN_STR=couchbases://cb.your-endpoint.cloud.couchbase.com
+COUCHBASE_USERNAME=your_username
+COUCHBASE_PASSWORD=your_password
+COUCHBASE_BUCKET=your_bucket_name
 ```
 
 #### 4. Run the application
@@ -126,19 +151,92 @@ python main.py
 4. Follow the instructions to create a new API key
 5. Copy the API key and add it to your `.env` file
 
+## 🏗️ Setting up Couchbase Capella
+
+### Prerequisites
+
+1. **Create a Couchbase Capella Account**: Sign up at [Couchbase Capella](https://cloud.couchbase.com/)
+2. **Create a Cluster**: Set up a new cluster in Capella
+3. **Create a Bucket**: Create a bucket for storing travel agent data
+4. **Configure Database Access**: Create database credentials
+
+### Capella Setup Steps
+
+1. **Sign up for Couchbase Capella**
+   - Go to [cloud.couchbase.com](https://cloud.couchbase.com/)
+   - Create a free account
+   - Verify your email address
+
+2. **Create a Cluster**
+   - Click "Create Cluster"
+   - Choose your cloud provider (AWS, Azure, or GCP)
+   - Select a region close to your users
+   - Choose "Developer Pro" for testing (free tier available)
+
+3. **Create a Bucket**
+   - Navigate to "Data Tools" > "Buckets"
+   - Click "Add Bucket"
+   - Name: `travel-agent` (or your preferred name)
+   - Memory Quota: 100 MB (minimum)
+   - Click "Add Bucket"
+
+4. **Create Database Credentials**
+   - Go to "Security" > "Database Access"
+   - Click "Create Database Access"
+   - Username: Choose a username
+   - Password: Create a strong password
+   - Bucket Access: Select your bucket and choose "Read/Write"
+   - Click "Create User"
+
+5. **Get Connection Details**
+   - Go to "Connect" tab in your cluster
+   - Copy the connection string (starts with `couchbases://`)
+   - Note your username and password
+
+### Database Structure
+
+**Bucket Structure**:
+- **Bucket**: Your chosen bucket name (e.g., `travel-agent`)
+- **Scope**: `agent` (configurable in code)
+- **Collection**: `memory` (configurable in code)
+
+**Document Structure**:
+```json
+{
+  "user::Chris": {
+    "travel_preferences": [
+      "I prefer Delta Airlines",
+      "I like window seats"
+    ]
+  }
+}
+```
+
 ## Environment Variables
 
-The application requires the following environment variable:
+The application requires the following environment variables:
 
+### Required Variables
 - `GOOGLE_API_KEY`: Your Google API key for accessing Gemini AI services
+- `COUCHBASE_CONN_STR`: Couchbase Capella connection string (e.g., `couchbases://cb.xxx.cloud.couchbase.com`)
+- `COUCHBASE_USERNAME`: Your Couchbase database username
+- `COUCHBASE_PASSWORD`: Your Couchbase database password
+- `COUCHBASE_BUCKET`: Your bucket name (e.g., `travel-agent`)
 
 ## Usage
 
-1. Make sure your virtual environment is activated
-2. Ensure your `.env` file contains your Google API key
-3. Run the application: `python main.py`
-4. Start chatting with the travel assistant!
-5. Type 'quit' or 'exit' to end the session
+1. **Make sure your virtual environment is activated**
+2. **Ensure your `.env` file contains all required variables**:
+   - Google API key
+   - Couchbase connection string
+   - Couchbase username and password
+   - Couchbase bucket name
+3. **Verify Couchbase Capella cluster is running**
+4. **Run the application**: `python main.py`
+5. **Start chatting with the travel assistant!**
+6. **Type 'quit' or 'exit' to end the session**
+
+> **Note**: The assistant will automatically connect to your Couchbase Capella cluster and store/retrieve user preferences in real-time.
 
 ### Example Conversation
 
@@ -154,20 +252,21 @@ The application requires the following environment variable:
 
 ```
 .
-├── README.md                 # This file
-├── main.py                   # Main application file
-├── pyproject.toml           # Project configuration and dependencies
-├── .env                     # Environment variables (create this)
-├── .venv/                   # Virtual environment (created during setup)
-└── travel_agent_memory.json # Memory storage file (created automatically)
+├── README.md          # This file
+├── main.py            # Couchbase-powered travel assistant
+├── pyproject.toml     # Project configuration and dependencies
+├── .env               # Environment variables (create this)
+└── .venv/             # Virtual environment (created during setup)
 ```
 
 ## Features Overview
 
-- **Memory System**: The assistant remembers your travel preferences across sessions
-- **Flight Search**: Mock flight search functionality that considers your preferences
-- **Interactive Chat**: Natural language conversation interface
-- **Preference Learning**: The assistant learns and saves your airline preferences
+- **💾 Cloud Memory System**: User preferences stored in Couchbase Capella for persistence across sessions
+- **✈️ Smart Flight Search**: AI-powered flight search that considers saved user preferences
+- **💬 Interactive Chat**: Natural language conversation interface with memory
+- **🧠 Preference Learning**: The assistant learns and saves airline and seat preferences
+- **🌐 Multi-user Support**: Each user's preferences stored separately in the cloud
+- **⚡ Real-time Sync**: Instant access to preferences from anywhere
 
 ## Troubleshooting
 
@@ -187,6 +286,23 @@ The application requires the following environment variable:
 3. **Python version issues**
    - This project requires Python 3.10 or higher
    - Check your Python version: `python --version`
+
+4. **Couchbase connection errors**
+   - Verify your Couchbase Capella cluster is running
+   - Check your connection string format: `couchbases://cb.xxx.cloud.couchbase.com`
+   - Ensure your database credentials are correct
+   - Verify the bucket name exists in your cluster
+   - Check if your IP is allowlisted in Capella (if using IP restrictions)
+
+5. **"Bucket not found" error**
+   - Make sure the bucket name in your `.env` file matches exactly
+   - Verify the bucket exists in your Couchbase Capella cluster
+   - Check that your user has access to the bucket
+
+6. **"Authentication failed" error**
+   - Verify your username and password are correct
+   - Ensure the database user has the right permissions (Read/Write)
+   - Check if the user is enabled in Capella
 
 ### Virtual Environment Commands
 
