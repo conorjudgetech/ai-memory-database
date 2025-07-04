@@ -145,7 +145,7 @@ python main.py
 
 ### Prerequisites
 
-1. **Create a Couchbase Capella Account**: Sign up at [Couchbase Capella](https://cloud.couchbase.com/)
+1. **Create a Couchbase Capella Account**: Sign up at [Couchbase Capella](https://cloud.couchbase.com/sign-up?utm_source=giveago&utm_medium=community)
 2. **Create a Cluster**: Set up a new cluster in Capella
 3. **Create a Bucket**: Create a bucket for storing travel agent data
 4. **Configure Database Access**: Create database credentials
