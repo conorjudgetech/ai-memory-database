@@ -83,8 +83,8 @@ persistent_data = CouchbaseMemory(
     username=COUCHBASE_USERNAME,
     password=COUCHBASE_PASSWORD,
     bucket_name=COUCHBASE_BUCKET,
-    scope_name="agent",  # match your setup
-    collection_name="memory",  # match your setup
+    scope_name="_default",  # match your setup
+    collection_name="_default",  # match your setup
 )
 
 

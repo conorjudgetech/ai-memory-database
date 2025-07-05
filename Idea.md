@@ -1,4 +1,3 @@
-Idea
 Perfect — you’re describing a Wellness Memory Coach — a smart assistant that evolves with the user’s fitness, diet, medical needs, and lifestyle over time.
 
 Let’s flesh it out clearly so your group can present and build it easily.
