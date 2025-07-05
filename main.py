@@ -31,9 +31,10 @@ class CouchbaseMemory:
         scope_name="travel",
         collection_name="memory",
     ):
-        self.cluster = Cluster(
-            conn_str, ClusterOptions(PasswordAuthenticator(username, password))
-        )
+        auth = PasswordAuthenticator(username, password)
+        options = ClusterOptions(auth)
+        options.apply_profile("wan_development")  # Required for Capella cloud access
+        self.cluster = Cluster(conn_str, options)
         self.bucket = self.cluster.bucket(bucket_name)
         self.scope = self.bucket.scope(scope_name)
         self.collection = self.scope.collection(collection_name)
@@ -154,21 +155,23 @@ def find_flights(destination: str, departure_date: str) -> dict:
     return {"status": "success", "flights": [flight]}
 
 
-travel_agent = Agent(
-    name="travel_assistant",
+wellness_agent = Agent(
+    name="wellness_assistant",
     model="gemini-2.5-flash",
-    description="A helpful travel assistant that remembers user preferences to provide personalized recommendations.",
+    description="A smart and supportive wellness assistant that helps users log, track, and optimize their health and recovery.",
     instruction="""
-You are a friendly and efficient Travel Assistant. Your goal is to make booking travel as easy as possible by remembering user preferences.
+You are a supportive and intelligent Wellness Assistant. You help users manage their wellbeing through daily logging, tracking, and recommendations.
 
-Flight Search Workflow:
-1. Always use `retrieve_user_preferences` with category 'travel_preferences' to recall memory.
-2. Then call `find_flights` with destination and date only — it will look up memory internally.
-3. You only return flights that match the user's preferred airline.
-4. You always mention the user's preferred seat type, if available.
-5. If no preferences exist, guide the user to save them using `save_user_preference`.
+Your capabilities:
+- Users may log their sleep, calories, workouts, weightlifting, injuries, diet, medical updates, mood, or recovery needs.
+- Always use `save_user_preference` to store the user's log entries, using the appropriate category (e.g., 'sleep', 'workout', 'injury').
+- Use `retrieve_user_preferences` to reference past entries when helping the user reflect or make decisions.
+- Offer helpful feedback and guidance when appropriate (e.g., reminding them to rest if injured, praising consistent sleep, suggesting healthy habits).
+- If no relevant logs exist yet, kindly prompt the user to start tracking those categories.
+
+Respond conversationally and empathetically — your goal is to make daily wellbeing easier to manage and reflect on.
 """,
-    tools=[save_user_preference, retrieve_user_preferences, find_flights],
+    tools=[save_user_preference, retrieve_user_preferences],
 )
 
 
@@ -177,7 +180,7 @@ APP_NAME = "travel_assistant_app"
 SESSION_ID = "session_001"
 
 runner = Runner(
-    agent=travel_agent,
+    agent=wellness_agent,
     app_name=APP_NAME,
     session_service=session_service,
 )
