@@ -38,7 +38,7 @@ class CouchbaseMemory:
         self.bucket = self.cluster.bucket(bucket_name)
         self.scope = self.bucket.scope(scope_name)
         self.collection = self.scope.collection(collection_name)
-        print("[Memory System] Connected to Couchbase Capella")
+        # print("[Memory System] Connected to Couchbase Capella")
 
     def _doc_id(self, user_id: str):
         return f"user::{user_id}"
@@ -54,9 +54,9 @@ class CouchbaseMemory:
         if data not in doc[category]:
             doc[category].append(data)
             self.collection.upsert(doc_id, doc)
-            print(
-                f"[Memory System] Saved data for user '{user_id}' in category '{category}': '{data}'"
-            )
+            # print(
+            #     f"[Memory System] Saved data for user '{user_id}' in category '{category}': '{data}'"
+            # )
         return True
 
     def search_by_category(self, user_id: str, category: str) -> list:
@@ -66,9 +66,9 @@ class CouchbaseMemory:
             results = doc.get(category, [])
         except DocumentNotFoundException:
             results = []
-        print(
-            f"[Memory System] Retrieved {len(results)} items from category '{category}' for user '{user_id}'."
-        )
+        # print(
+        #     f"[Memory System] Retrieved {len(results)} items from category '{category}' for user '{user_id}'."
+        # )
         return results
 
 
@@ -148,9 +148,9 @@ def find_flights(destination: str, departure_date: str) -> dict:
         ),
     }
 
-    print(
-        f"INFO: Generated 1 flight to {destination} on {departure_date} for preferred airline: {airline_pref}"
-    )
+    # print(
+    #     f"INFO: Generated 1 flight to {destination} on {departure_date} for preferred airline: {airline_pref}"
+    # )
 
     return {"status": "success", "flights": [flight]}
 
@@ -187,7 +187,7 @@ runner = Runner(
 
 
 async def call_agent_async(query: str, user_id: str, session_id: str):
-    print(f"\n>>> User ({user_id}): {query}")
+    # print(f"\n>>> User ({user_id}): {query}")
     content = types.Content(role="user", parts=[types.Part(text=query)])
     setattr(save_user_preference, "user_id", user_id)
     setattr(retrieve_user_preferences, "user_id", user_id)
@@ -197,19 +197,19 @@ async def call_agent_async(query: str, user_id: str, session_id: str):
     ):
         if event.is_final_response() and event.content and event.content.parts:
             final_response = event.content.parts[0].text
-            print(f"<<< Assistant: {final_response}")
+            # print(f"<<< Assistant: {final_response}")
             return final_response
 
     return "No response received."
 
 
 async def interactive_chat():
-    print("--- Starting Interactive Travel Assistant ---")
-    print("Type 'quit' to end the session.")
+    # print("--- Starting Interactive Travel Assistant ---")
+    # print("Type 'quit' to end the session.")
     while True:
         user_query = input("\n> ")
         if user_query.lower() in ["quit", "exit"]:
-            print("Ending session. Goodbye!")
+            # print("Ending session. Goodbye!")
             break
         await call_agent_async(query=user_query, user_id=USER_ID, session_id=SESSION_ID)
 
